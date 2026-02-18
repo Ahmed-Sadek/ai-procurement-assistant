@@ -14,18 +14,36 @@ An AI-powered natural language interface for exploring California state procurem
 
 ## 🏗️ Architecture
 
-```
-┌─────────────────┐       POST /chat       ┌─────────────────────────┐
-│                 │ ────────────────────▸   │  FastAPI Backend (:8000) │
-│  React Frontend │                        │                         │
-│  (Vite + TS)    │ ◂──── { reply }        │  LLM Agent (GPT-4o-mini)│
-│  localhost:8080  │                        │         │               │
-└─────────────────┘                        │         ▼               │
-                                           │  MongoDB (346K docs)    │
-                                           └─────────────────────────┘
+```mermaid
+sequenceDiagram
+    participant User
+    participant Frontend
+    participant Backend
+    participant Agent
+    participant LLM
+    participant MongoDB
+
+    User->>Frontend: "How many orders?"
+    Frontend->>Backend: POST /chat
+    Backend->>Agent: handle_message()
+    Agent->>LLM: Generate query
+    LLM-->>Agent: {"type": "count"}
+    Agent->>Agent: Validate & Sanitize
+    Agent->>MongoDB: Execute
+    MongoDB-->>Agent: 346,018
+    Agent->>LLM: Summarize result
+    LLM-->>Agent: "There are 346k orders."
+    Agent-->>Backend: response
+    Backend-->>Frontend: {reply}
+    Frontend-->>User: Display message
 ```
 
-**Flow:** User question → LLM generates MongoDB query → Execute → LLM summarizes results → Response
+## 🧠 Key Design Decisions
+
+- **Safety First**: The agent uses a strict allowlist. Only `query` (find) and `aggregation` operations are permitted. Destructive commands like `delete`, `drop`, `$out`, and `$merge` are blocked at the code level.
+- **Self-Correcting**: If the LLM generates invalid JSON, the agent catches the error and feeds it back to the LLM for a retry (up to 3 attempts).
+- **Result Truncation**: To prevent exceeding the LLM's context window, large result sets are automatically truncated (default 50 items) before summarization.
+- **Pipeline Cleanup**: The agent proactively strips whitespace and corrects common LLM formatting mistakes in aggregation pipelines.
 
 ---
 
@@ -230,8 +248,3 @@ Returns `{"status": "ok"}` if the server is running.
 
 [California State Purchase Orders (2012–2015)](https://data.ca.gov/) — 346,018 records of state procurement transactions including departments, suppliers, items, and costs.
 
----
-
-## 📝 License
-
-MIT
