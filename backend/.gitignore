@@ -1,8 +1,12 @@
 .env
 .venv/
+.pytest_cache
 __pycache__/
 *.pyc
 .DS_Store
 data/
 *.zip
 *.pdf
+data/*
+*.lock
+
