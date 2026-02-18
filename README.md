@@ -4,6 +4,7 @@ An AI-powered natural language interface for exploring California state procurem
 
 ---
 
+
 ## 🎬 Demo
 
 | Welcome Screen | Chat Response |
@@ -247,4 +248,12 @@ Returns `{"status": "ok"}` if the server is running.
 ## 📊 Data Source
 
 [California State Purchase Orders (2012–2015)](https://data.ca.gov/) — 346,018 records of state procurement transactions including departments, suppliers, items, and costs.
+
+---
+
+## 📝 License
+
+This project is licensed under the [MIT License](https://opensource.org/licenses/MIT).
+
+Copyright (c) 2026 Procurement AI Assistant
 
