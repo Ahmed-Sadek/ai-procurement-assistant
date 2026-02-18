@@ -1,0 +1,36 @@
+[project]
+name = "backend"
+version = "0.1.0"
+description = "AI Procurement Assistant Backend"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "fastapi",
+    "uvicorn[standard]",
+
+    "requests", 
+    "httpx",
+    "pymongo",
+    "motor",
+
+    "langchain",
+    "langchain-openai",
+    "langchain-community",
+
+    "weaviate-client",
+    "sentence-transformers",
+
+    "openai",
+
+    "python-dotenv",
+    "pydantic",
+    "pydantic-settings",
+    ]
+
+[dependency-groups]
+dev = [
+    "pytest>=9.0.2",
+]
+
+[tool.pytest.ini_options]
+pythonpath = ["."]
